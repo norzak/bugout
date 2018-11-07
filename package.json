@@ -1,6 +1,6 @@
 {
   "name": "bugout",
-  "version": "0.0.3",
+  "version": "0.0.7",
   "description": "Backend web services over WebRTC.",
   "main": "index.js",
   "author": "Chris McCormick <chris@mccormick.cx>",
@@ -14,25 +14,37 @@
     "url": "https://github.com/chr15m/bugout/issues/"
   },
   "dependencies": {
-    "base58check": "^2.0.0",
     "bencode": "^2.0.0",
     "bs58": "^4.0.1",
+    "bs58check": "^2.1.2",
     "debug": "^3.1.0",
     "inherits": "^2.0.3",
     "ripemd160": "^2.0.2",
-    "tape": "^4.9.1",
     "tweetnacl": "^1.0.0",
     "webtorrent": "^0.102.0"
   },
   "devDependencies": {
-    "babel-minify": "^0.4.3",
-    "browserify": "^16.2.2"
+    "babel-minify": "^0.5.0",
+    "browserify": "^16.2.3",
+    "disc": "^1.3.3",
+    "tape": "^4.9.1"
   },
   "scripts": {
     "build": "npm run compile && npm run minify",
     "minify": "cat bugout.js | minify > bugout.min.js",
     "compile": "browserify -s Bugout index.js > bugout.js",
+    "disc": "browserify -s Bugout --full-paths index.js | discify > disc.html",
     "size": "npm run build && cat bugout.min.js | gzip | wc -c",
     "test": "node test.js"
-  }
+  },
+  "keywords": [
+    "crypto",
+    "bittorrent",
+    "webtorrent",
+    "networking",
+    "webrtc",
+    "decentralization",
+    "hash",
+    "Uint8Array"
+  ]
 }

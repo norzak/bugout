@@ -17,9 +17,16 @@ Web service bug-out bag. **[Live demo](https://chr15m.github.io/bugout)**. **[Me
 
 [Bugout is a humble attempt to re-decentralize the web a little](https://chr15m.github.io/on-self-hosting-and-decentralized-software.html).
 
-This is a functional prototype. It's pre-alpha quality software. Be careful.
+This is a functional prototype. It's pre-alpha quality software. It will allow people to connect directly to your browser from outside your network. Be careful.
 
-Try the [demo](https://chr15m.github.io/bugout), leave a message on the [message board demo](https://chr15m.github.io/bugout/examples/messageboard.html), or [run you own server-in-a-tab](https://chr15m.github.io/bugout/server.html).
+[Demos](#demos) | [Install](#install) | [Use](#use) | [API documentation](./docs/API.md) | [Server boilerplate](#boilerplate) | [Deploy headless](#deploy)
+
+## Demos
+
+ * [Demo client](https://chr15m.github.io/bugout) (good for testing your server API).
+ * [Demo server](https://chr15m.github.io/bugout/server.html).
+ * Leave a message on the [message board demo](https://chr15m.github.io/bugout/examples/messageboard.html).
+ * [Boilerplate single-page server code](https://github.com/chr15m/bugout/blob/master/docs/server-boilerplate.html).
 
 ## Install
 
@@ -48,6 +55,10 @@ Clojurescript:
 ```
 
 ## Use
+
+```javascript
+var Bugout = require("bugout");
+```
 
 To create a Bugout server that runs in a browser tab:
 
@@ -125,6 +136,10 @@ Note that you can connect to a generic peer-to-peer swarm without a server by si
 var b = new Bugout("some shared swarm identifier");
 ```
 
+### Boilerplate
+
+The [quick-start boilerplate server in a single HTML file](https://github.com/chr15m/bugout/blob/master/docs/server-boilerplate.html) will quickly get you up and running with your own Bugout server.
+
 ### Options
 
  * `wt` - a [WebTorrent instance](https://webtorrent.io/docs) to re-use. Pass this in if you're making connections to multiple Bugout channels.
@@ -133,17 +148,25 @@ var b = new Bugout("some shared swarm identifier");
  * `iceServers` - pass in custom STUN / TURN servers e.g.: `iceServers: [{urls: "stun:server.com:111"} ... ]`
  * `announce` - use custom announce trackers to introduce peers e.g. `["wss://tracker...", ...]`. Only peers using the same trackers will find eachother.
 
-### Nodejs
-
-Check out [the nodejs demo](./docs/examples/node/) for an example of running a Bugout service under Node. Note that the `wrtc` library is not that stable at the time of writing and running Bugout in headless Chrome or Firefox seems to work better.
-
 ### Turn on debug logging
 
 ```javascript
 localStorage.debug = "bugout";
 ```
 
-### The FAMGA virus
+## Deploy
+
+Bugout servers can deployed and run inside of browser tabs on long running PCs but you can also deploy them "headless" more like traditional servers. There are a couple of ways of doing that as follows:
+
+### Headless browser server
+
+[Bugout launcher](https://github.com/chr15m/bugout-launcher) is a nodejs based helper script to launch and run your Bugout servers from the command line using a headless browser instance.
+
+### Nodejs
+
+Check out [the nodejs demo](./docs/examples/node/) for an example of running a Bugout service under Node. Note that the `wrtc` library is not that stable at the time of writing and running Bugout in headless Chrome or Firefox seems to work better. Bugout servers running inside nodejs obviously won't have access to browser facilities like localStorage.
+
+## The FAMGA virus
 
 > Infected with the [FAMGA](https://duckduckgo.com/?q=FAMGA) virus everybody's eating brains. Time to grab yr bugout box & hit the forest.
 
