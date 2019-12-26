@@ -170,7 +170,7 @@ Bugout.prototype.send = function(address, message) {
     var message = address;
     var address = null;
   }
-  var packet = {"y": "m", "v": JSON.stringify(message)};
+  var packet = makePacket(this, {"y": "m", "v": JSON.stringify(message)});
   if (address) {
     if (this.peers[address]) {
       packet = encryptPacket(this, this.peers[address].pk, packet);
