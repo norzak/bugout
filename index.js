@@ -297,7 +297,7 @@ function onMessage(bugout, identifier, wire, message) {
           var messagestring = packet.v.toString();
           var messagejson = null;
           try {
-             messagejson = JSON.parse(messagestring);
+            var messagejson = JSON.parse(messagestring);
           } catch(e) {
             debug("Malformed message JSON: " + messagestring);
           }
