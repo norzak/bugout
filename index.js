@@ -34,7 +34,7 @@ function Bugout(identifier, opts) {
   if (opts.iceServers) {
     trackeropts.rtcConfig = {iceServers: opts.iceServers};
   }
-  this.announce = opts.announce || ["wss://hub.bugout.link", "wss://tracker.openwebtorrent.com", "wss://tracker.btorrent.xyz"];
+  this.announce = opts.announce || ["wss://hub.bugout.link", "wss://tracker.openwebtorrent.com"];
   this.wt = opts.wt || new WebTorrent({tracker: trackeropts});
   this.nacl = nacl;
   
@@ -161,12 +161,16 @@ Bugout.prototype.ping = function() {
     sendRaw(this, packet);
 }
 
+Bugout.prototype.getPeer = function(address) {
+    return this.peers[address];
+}
+
 Bugout.prototype.send = function(address, message) {
   if (!message) {
     var message = address;
     var address = null;
   }
-  var packet = makePacket(this, {"y": "m", "v": JSON.stringify(message)});
+  var packet = {"y": "m", "v": JSON.stringify(message)};
   if (address) {
     if (this.peers[address]) {
       packet = encryptPacket(this, this.peers[address].pk, packet);
@@ -286,14 +290,14 @@ function onMessage(bugout, identifier, wire, message) {
       if (checksig && checkid && checktime) {
         // message is authenticated
         var ek = packet.ek.toString();
-        sawPeer(bugout, pk, ek, identifier);
+        sawPeer(wire, bugout, pk, ek, identifier);
         // check packet types
         if (packet.y == "m") {
           debug("message", identifier, packet);
           var messagestring = packet.v.toString();
           var messagejson = null;
           try {
-            var messagejson = JSON.parse(messagestring);
+             messagejson = JSON.parse(messagestring);
           } catch(e) {
             debug("Malformed message JSON: " + messagestring);
           }
@@ -380,7 +384,7 @@ function rpcCall(bugout, pk, call, args, nonce, callback) {
   sendRaw(bugout, packet);
 }
 
-function sawPeer(bugout, pk, ek, identifier) {
+function sawPeer(wire, bugout, pk, ek, identifier) {
   debug("sawPeer", bugout.address(pk), ek);
   var t = now();
   var address = bugout.address(pk);
@@ -392,6 +396,7 @@ function sawPeer(bugout, pk, ek, identifier) {
         "ek": ek,
         "pk": pk,
         "last": t,
+        "wire": wire
       };
       debug("seen", bugout.address(pk));
       bugout.emit("seen", bugout.address(pk));
@@ -444,7 +449,7 @@ function onExtendedHandshake(bugout, identifier, wire, handshake) {
   bugout.emit("wireseen", bugout.torrent.wires.length, wire);
   bugout.connections();
   // TODO: check sig and drop on failure - wire.peerExtendedHandshake
-  sawPeer(bugout, handshake.pk.toString(), handshake.ek.toString(), identifier);
+  sawPeer(wire, bugout, handshake.pk.toString(), handshake.ek.toString(), identifier);
 }
 
 // utility fns
